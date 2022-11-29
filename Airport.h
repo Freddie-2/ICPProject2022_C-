@@ -9,7 +9,7 @@ using namespace std;
 
 /*
 * airport class
-* latitude, longitude and IATA code
+* country, city and airport code
 */
 class Airport{
 public:
