@@ -33,7 +33,7 @@ void createInputFile(){
 
 int main(){
 
-
+    createInputFile();
     unordered_map<string, Airport> airports = collectData();
        // map iterator created
     // iterator pointing to start of map
