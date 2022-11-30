@@ -1,9 +1,11 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <fstream>
 #include<unordered_map>
 #include <vector>
 #include <sstream>
+
 
 using namespace std;
 
@@ -30,7 +32,8 @@ public:
     string getAirlineCode(){return airlineCode;}
     int getStops(){return stops;}
 
-   routemethod(){
+   unordered_map<string, vector<Route>> routemethod();
+   /*{
 
         unordered_map<string, vector<Route>> routeMap;
 
@@ -69,7 +72,7 @@ public:
                      << endl;
             cout << "Files Loaded";
             }
-        }
+        } */
 
 
 };

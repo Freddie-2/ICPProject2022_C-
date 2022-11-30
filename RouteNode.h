@@ -16,14 +16,17 @@ public:
     int stops;
 
     bool operator==(const RouteNode& name) const {
-        return this -> current == name.current;
+        return this -> current.srcAirportCode == name.current.srcAirportCode;
     }
     RouteNode(Route rte, RouteNode* rn){
         this -> current = rte;
         this -> parent = rn;
     }
     RouteNode(Route rte){
-        this -> rte;
+        this -> current = rte;
         this -> parent = nullptr;
+    }
+    void setParent(RouteNode *p){
+        p = parent;
     }
 };

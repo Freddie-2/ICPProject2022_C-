@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void Route::routemethod(){
+unordered_map<string, vector<Route>> Route::routemethod(){
 
         unordered_map<string, vector<Route>> routeMap;
 
@@ -34,11 +34,14 @@ void Route::routemethod(){
                     routeMap[source] = temp;
                 }
                 words.clear();
+                cout << routeMap.size() << endl;
                 //cout << endl;
             }
-            for (auto i = routeMap.begin(); i != routeMap.end(); i++)
+            /*for (auto i = routeMap.begin(); i != routeMap.end(); i++)
                 cout << i->first << "      "
                      << endl;
             cout << "Files Loaded";
+            } */
             }
+            return routeMap;
         }
