@@ -21,7 +21,7 @@ public:
 
     // constructor
     Airport() {}
-    Airport(string airportCode, string country, string city) {
+    Airport(string airportCode, string city, string country) {
         this->airportCode = airportCode;
         this->country = country;
         this->city = city;

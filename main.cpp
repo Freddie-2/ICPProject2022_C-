@@ -17,14 +17,13 @@ using namespace std;
 * function to create the input file
 * with the start city and country, and destination city and country
 */
-void createInputFile(){
-    string city, city2, country, country2;
+void createInputFile(string& city, string &country, string& city2,string& country2){
     cout << "Enter the start city and country <Enter>"; // taking the start city and country
     cin >> city >> country;
     cout << "Enter the destination city and country <Enter>";
     cin >> city2 >> country2;
-    cout << "City is " << city << "and country is " << country << endl;
-    string input = city + "-" + country + ".txt";
+    cout << "City is " << city << " and country is " << country << endl;
+    string input = city + "-" + city2 + ".txt";
     fstream inputfile;
     inputfile.open(input, ios::out);
     if (inputfile.is_open()){
@@ -34,6 +33,39 @@ void createInputFile(){
     }
 }
 
+/*
+* function to get the solution path
+* routes taken from the start city to destination
+*/
+string getSolutionPath(RouteNode* goal) {
+    string routeTaken = "";
+    for(RouteNode* nodeptr = goal; nodeptr != nullptr && nodeptr->parent != nullptr; nodeptr = nodeptr->parent) {
+        string tmp = nodeptr->current.airlineCode + " from " + nodeptr->parent->current.srcAirportCode + " to " + nodeptr->current.srcAirportCode + "\n";
+        routeTaken = tmp + routeTaken;
+    }
+    return routeTaken;
+
+}
+
+/*
+* function to create the output file and write the solution path(routes) inside
+*/
+void writeOutputFile(RouteNode* goal, string city, string city2, string country2) {
+        string output = getSolutionPath(goal);
+        string out_str = city + "-" + city2 + "_output.txt";
+        fstream outfile;
+        outfile.open(out_str, ios::out);
+        if (outfile.is_open()){
+            outfile << output;
+            outfile.close();
+
+    }
+    cout << "Write Successful" << endl;
+}
+
+/*
+* function to get the possible destinations from a particular airport
+*/
 vector<Route>getRoutes(string airportCode, unordered_map<string, vector<Route>> routes) {
     vector<Route> destAirports;
     for (auto hgf : routes){
@@ -46,18 +78,49 @@ vector<Route>getRoutes(string airportCode, unordered_map<string, vector<Route>> 
     }
     return destAirports;
 }
+
 /*
-* performing the search for routes
+* function to get the airport codes of the start and destination cities
 */
-int routeSearching(string source, string destination, unordered_map<string, vector<Route>> routes){
+void getAirportCodes(string city, string country, string city2,string country2, string& sourCode, string& destCode) {
+
+    unordered_map<string, Airport> airports = collectData();
+    // map iterator created
+    // iterator pointing to start of map
+
+    unordered_map<string, Airport>::iterator it = airports.begin();
+
+    // Iterating over the map using Iterator till map end.
+
+    while (it != airports.end())
+    {
+        // Accessing the key
+        string word = it->first;
+        // Accessing the value
+        Airport cityCou = it->second;
+        if (cityCou.city.compare(city) == 0 && cityCou.country.compare(country) == 0) {
+            sourCode = it->first;
+        }
+
+        if (cityCou.city.compare(city2) == 0 && cityCou.country.compare(country2) == 0) {
+            destCode = it->first;
+        }
+        // iterator incremented to point next item
+        it++;
+    }
+}
+
+/*
+* function to perform the search for routes
+*/
+int routeSearching(string city, string country, string city2,string country2, unordered_map<string, vector<Route>> routes){
     cout << "Search Started" << endl;
 
-    cout << routes.size() << endl;
+    string destination;
+    string source;
+    getAirportCodes(city, country, city2, country2, source, destination);
 
     Route *startPlace = new Route("", source, 0);
-    /*startPlace.srcAirportCode = source;
-    startPlace.airlineCode = "";
-    startPlace.stops = 0;*/
 
     RouteNode *fRouteNodePtr = new RouteNode(*startPlace, nullptr);
     deque<RouteNode> frontier;
@@ -67,23 +130,20 @@ int routeSearching(string source, string destination, unordered_map<string, vect
 
     while(!frontier.empty()){
         RouteNode *current = new RouteNode(frontier.front().current, fRouteNodePtr);
-        cout << "Airport Code: " + frontier.front().current.airlineCode << endl;
+        cout << "Current Airport Code: " + frontier.front().current.srcAirportCode << endl;
         frontier.pop_front();
         explored.insert(current->current.srcAirportCode);
         vector<Route> destinations;
-        //auto itr = routes.find(startPlace.srcAirportCode);
-        //destinations = itr->second;
 
-        //vector<Route> destinations;
         destinations = getRoutes(current->current.srcAirportCode, routes);
-        cout << "Size is: " << destinations.size() << endl;
 
         for (auto desti : destinations){
-            RouteNode *child = new RouteNode(desti, fRouteNodePtr);
+            RouteNode *child = new RouteNode(desti, current);
+
             if (child->current.srcAirportCode.compare(destination) == 0){
-                cout << "Destination Found";
+                cout << "Destination Found\n";
+                writeOutputFile(child, city, city2, country2);
                 return 0;
-                //return solutionPath;
             }
 
             auto itr2 = find(frontier.begin(), frontier.end(), *child);
@@ -95,33 +155,21 @@ int routeSearching(string source, string destination, unordered_map<string, vect
 
 }
 
+/*
+* main method
+*/
 int main(){
+    string startCity, startCountry, destinationCity, destinationCountry;
+    string destCode;
+    string sourCode;
+    createInputFile(startCity, startCountry, destinationCity, destinationCountry);
 
-    //createInputFile();
-    unordered_map<string, Airport> airports = collectData();
-       // map iterator created
-    // iterator pointing to start of map
-
-    unordered_map<string, Airport>::iterator it = airports.begin();
-
-    // Iterating over the map using Iterator till map end.
-    /*
-    while (it != airports.end())
-    {
-        // Accessing the key
-        string word = it->first;
-        // Accessing the value
-        Airport count_ = it->second;
-        cout << word << " " << count_.airportCode << endl;
-        // iterator incremented to point next item
-        it++;
-    }
-    cout << "Yes" << endl; */
-
+    cout << "Yes" << endl;
     //createInputFile();
     Route newRoute;
 
     unordered_map<string, vector<Route>> routes = newRoute.routemethod();
-    routeSearching("ACC", "HRE", routes);
+    cout <<"The start city: " + startCity << endl;
+    routeSearching(startCity, startCountry, destinationCity, destinationCountry, routes);
     return 0;
 };

@@ -9,6 +9,9 @@
 
 using namespace std;
 
+/*
+* the node class
+*/
 class RouteNode{
 public:
     Route current;

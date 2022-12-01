@@ -2,6 +2,9 @@
 
 using namespace std;
 
+/*
+* getting the route map from the routes.csv file.
+*/
 unordered_map<string, vector<Route>> Route::routemethod(){
 
         unordered_map<string, vector<Route>> routeMap;
@@ -20,7 +23,6 @@ unordered_map<string, vector<Route>> Route::routemethod(){
 
                 while (getline(ss, word, ',')){
                     words.push_back(word);
-                    //cout << word << ", ";
                 }
                 string source = words[2];
                 Route myRoute(words.at(0), words.at(4), stoi(words.at(7)));
@@ -34,14 +36,8 @@ unordered_map<string, vector<Route>> Route::routemethod(){
                     routeMap[source] = temp;
                 }
                 words.clear();
-                cout << routeMap.size() << endl;
-                //cout << endl;
             }
-            /*for (auto i = routeMap.begin(); i != routeMap.end(); i++)
-                cout << i->first << "      "
-                     << endl;
-            cout << "Files Loaded";
-            } */
-            }
-            return routeMap;
+
         }
+        return routeMap;
+}
